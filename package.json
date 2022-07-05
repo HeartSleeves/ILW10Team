@@ -1,0 +1,31 @@
+{
+  "type": "module",
+  "name": "ilw10team",
+  "version": "1.0.0",
+  "description": "Team Profile Generator",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "jest --verbose"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HeartSleeves/ILW10Team.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HeartSleeves/ILW10Team/issues"
+  },
+  "homepage": "https://github.com/HeartSleeves/ILW10Team#readme",
+  "dependencies": {
+    "inquirer": "^9.0.0",
+    "jest": "^28.1.2"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.18.6"
+  }
+}

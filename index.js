@@ -1,96 +1,181 @@
 //Inquirer: Prompt Team members and info
-const inquirer = require('inquirer');
-const questions = [
-    {
-    type: 'list',
-    message: 'Would you like to add a team member?',
-    name: 'addEmployee',
-    choices: ['Add Manager', 'Add Engineer', 'Add Intern', 'No, I\'m done']
-  },
-    {
-      type: 'input',
-      message: 'What is the employee\'s name?',
-      name: 'name',
-    },
-    {
-      type: 'input',
-      message: 'What is their employee ID?',
-      name: 'id',
-    },
-    {
-        type: 'input',
-        message: 'What is their email?',
-        name: 'email',
-      },
-      {
-        type: 'input',
-        message: 'What is their office number?',
-        name: 'officeNumber',
-        when: addEmployee === 'Add Manager'
-      },
-      {
-        type: 'input',
-        message: 'What is their github address?',
-        name: 'github',
-      },
-      {
-        type: 'input',
-        message: 'What is the school they attend?',
-        name: 'school',
-      },
-  ]
+import Manager from "./lib/Manager.js";
+import Engineer from "./lib/Engineer.js";
+import Intern from "./lib/Intern.js";
+import inquirer from "inquirer";
+import fs from "fs";
+import { buildProfile } from "./src/template.js";
+import Employee from "./lib/Employee.js";
+
+const managers = [];
+const engineers = [];
+const interns = [];
+
 //info: team manager's name, employee ID, email, office number.
+function addManager() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is the manager's name?",
+        name: "name",
+      },
+      {
+        type: "input",
+        message: "What is the manager's employee id?",
+        name: "id",
+      },
+      {
+        type: "input",
+        message: "What is the manager's email address?",
+        name: "email",
+      },
+      {
+        type: "input",
+        message: "What is the manager's office number?",
+        name: "officeNumber",
+      },
+    ])
+    .then((answers) => {
+      const manager = new Manager(
+        answers.name,
+        answers.id,
+        answers.email,
+        answers.officeNumber
+      );
+      managers.push(manager);
+      createTeam();
+    });
+}
+
 //THEN: query add engineer or intern
-//engineer: name, ID, email, github. Return to menu.
-//intern: name, ID, email, school. Return to menu
-//generate HTML
-//HTML email is clickable, opens email.
-//Github username is clickable, opens github in new tab
-//
-function getAnswers() {
-    return inquirer.prompt(questions).then((answers) => {
-      if (answers.is_finished) {
-        return answers;
-      } else {
-        return getAnswers();
+function createTeam() {
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        message: "Would you like to add an employee?",
+        name: "addEmployee",
+        choices: [
+          "Manager",
+          "Engineer",
+          "Intern",
+          "All team members accounted for",
+        ],
+      },
+    ])
+
+    .then((answers) => {
+      console.log(answers.addEmployee);
+      switch (answers.addEmployee) {
+        case "Manager":
+          addManager();
+          break;
+        case "Engineer":
+          addEngineer();
+          break;
+        case "Intern":
+          addIntern();
+          break;
+
+        default:
+          startBuild();
       }
     });
-  }
+}
 
+//engineer: name, ID, email, github. Return to menu.
+function addEngineer() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is the engineer's name?",
+        name: "name",
+      },
+      {
+        type: "input",
+        message: "What is the engineer's employee id?",
+        name: "id",
+      },
+      {
+        type: "input",
+        message: "What is the engineer's email address?",
+        name: "email",
+      },
+      {
+        type: "input",
+        message: "What is the engineer's github username?",
+        name: "github",
+      },
+    ])
+    .then((answers) => {
+      const engineer = new Engineer(
+        answers.name,
+        answers.id,
+        answers.email,
+        answers.github
+      );
+      engineers.push(engineer);
+      createTeam();
+    });
+}
 
-class Employee {
-    constructor(name, id, email) {
-        this.name = name;
-        this.id = id;
-        this.email = email;
+//intern: name, ID, email, school. Return to menu
+function addIntern() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is the intern's name?",
+        name: "name",
+      },
+      {
+        type: "input",
+        message: "What is the intern's employee id?",
+        name: "id",
+      },
+      {
+        type: "input",
+        message: "What is the intern's email address?",
+        name: "email",
+      },
+      {
+        type: "input",
+        message: "What school does the intern attend?",
+        name: "school",
+      },
+    ])
+    .then((answers) => {
+      const intern = new Intern(
+        answers.name,
+        answers.id,
+        answers.email,
+        answers.school
+      );
+      interns.push(intern);
+      createTeam();
+    });
+}
+
+//generate HTML
+function startBuild() {
+  let data = buildProfile(managers, engineers, interns);
+  console.log(data);
+  console.log("Building your team profile...");
+  fs.writeFile("./dist/teamprofile.html", data, (err) => {
+    if (err) console.log(err);
+    else {
+      console.log("Team profile created!");
     }
-    getName(){};
-    getID(){};
-    getEmail(){};
-    getRole(){};
-};
-
-class Manager extends Employee{
-    constructor(officeNumber){
-        this.officeNumber = officeNumber;
-    };
-    //prototype?
-getRole(){};}
-
-class Engineer extends Employee{
-    constructor(github){
-        this.github = github;
-    }
-    getGithub();
-    getRole();
-};
-
-class Intern extends Employee{
-    constructor(school){
-        this.school = school;
-    }
-    getSchool();
-    getRole();
-};
-
+  });
+}
+//HTML email is clickable, opens email.
+//Github username is clickable, opens github in new tab
 //validate user input
+
+function runApplication() {
+  addManager();
+}
+
+runApplication();
