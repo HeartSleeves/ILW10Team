@@ -161,7 +161,6 @@ function addIntern() {
 //generate HTML
 function startBuild() {
   let data = buildProfile(managers, engineers, interns);
-  console.log(data);
   console.log("Building your team profile...");
   fs.writeFile("./dist/teamprofile.html", data, (err) => {
     if (err) console.log(err);
