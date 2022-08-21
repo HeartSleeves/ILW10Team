@@ -7,6 +7,7 @@ Create an organized, styled HTML page for your working team of managers, enginee
 ## Screenshot
 
 ![Screenshot](./assets/screenshot.png)
+
 [Video](https://drive.google.com/file/d/13NBMvNSEF7Nxj7hZjia8g_QPWZTdrRYc/view?usp=sharing)
 
 ## Table of Contents
